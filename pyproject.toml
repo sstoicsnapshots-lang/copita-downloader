@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "copita"
+version = "2.0.0"
+description = "A fast, all-in-one download manager for video, audio, streams, files and torrents."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "GPL-3.0-or-later" }
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+]
+dependencies = [
+    "aiohttp>=3.9",
+    "certifi>=2024.2.2",
+    "cryptography>=42.0",
+    "curl_cffi>=0.7",
+    "fastapi>=0.110",
+    "httpx>=0.27",
+    "pillow>=10.2",
+    "pydantic>=2.6",
+    "reportlab>=4.1",
+    "uvicorn>=0.29",
+    "yt-dlp>=2024.8",
+]
+
+[project.optional-dependencies]
+torrents = ["libtorrent"]
+browser = ["playwright"]
+
+[project.scripts]
+copita = "copita.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["copita*"]

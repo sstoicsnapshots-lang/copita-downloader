@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copita Downloader</title>
+  <link rel="icon" type="image/png" href="copita-downloader-orange-icon.png?v=2.5">
+  <link rel="stylesheet" href="styles.css?v=3.6">
+</head>
+<body>
+
+  <div class="apple-window">
+
+    <!-- Apple Sidebar (Podcasts / Music Style) -->
+    <aside class="apple-sidebar">
+      <div class="sidebar-drag-spacer"></div>
+
+      <!-- Quick Search / Filter Input -->
+      <div class="sidebar-search-wrapper">
+        <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="sidebar-filter" class="sidebar-search-input" placeholder="Search downloads" autocomplete="off" spellcheck="false">
+      </div>
+
+      <!-- Main Navigation Items -->
+      <nav class="sidebar-nav">
+        <div class="sidebar-group">
+          <button class="nav-item active" data-filter="all">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            <span>All Downloads</span>
+            <span class="nav-badge" id="badge-all-count">0</span>
+          </button>
+          <button class="nav-item" data-filter="active">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 8 12 12 14 14"/>
+            </svg>
+            <span>Active Queue</span>
+            <span class="nav-badge accent" id="badge-active-count">0</span>
+          </button>
+          <button class="nav-item" data-filter="completed">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span>Downloaded</span>
+            <span class="nav-badge" id="badge-completed-count">0</span>
+          </button>
+        </div>
+
+        <!-- Library Section (Apple Podcasts Style) -->
+        <div class="sidebar-group">
+          <div class="sidebar-section-header">
+            <span>Library</span>
+          </div>
+          <button class="nav-item" data-filter="videos">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+              <line x1="7" y1="2" x2="7" y2="22"/>
+              <line x1="17" y1="2" x2="17" y2="22"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+            </svg>
+            <span>Movies & Videos</span>
+          </button>
+          <button class="nav-item" data-filter="audio">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18V5l12-2v13"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
+            </svg>
+            <span>Audio & Music</span>
+          </button>
+          <button class="nav-item" data-filter="manga">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span>Manga & Comics</span>
+          </button>
+          <button class="nav-item" data-filter="files">
+            <svg class="nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span>Files & Archives</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Sidebar Storage & System Footer (Clean Apple Native Style) -->
+      <div class="sidebar-footer">
+        <div class="disk-icon-circle" id="footer-folder-btn" title="Open Downloads Folder" onclick="openDownloadsDirectory()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="footer-info" id="footer-folder-label" title="Open Downloads Folder" onclick="openDownloadsDirectory()">
+          <div class="footer-title">Copita Downloads</div>
+          <div class="footer-meta"><span id="storage-text">-- GB</span> available</div>
+        </div>
+        <button class="btn-footer-action" id="btn-open-settings" title="Preferences">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Apple Main Content Canvas -->
+    <main class="apple-content-canvas">
+      
+      <!-- Top Titlebar & Contextual Toolbars -->
+      <header class="canvas-topbar">
+        <div class="page-title-row">
+          <div>
+            <h1 id="page-title" class="page-title">Downloads</h1>
+            <p id="page-subtitle" class="page-subtitle">Your downloads, all in one place.</p>
+          </div>
+        </div>
+
+        <!-- 1. All Downloads Toolbar -->
+        <div class="tab-context-panel" id="context-all">
+          <div class="download-action-bar">
+            <div class="url-input-container">
+              <svg class="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+              <input 
+                type="text" 
+                id="url-input" 
+                class="apple-input-field" 
+                placeholder="Paste a download link" 
+                autocomplete="off" 
+                spellcheck="false"
+              >
+              <button id="btn-paste-clipboard" class="apple-btn-pill" onclick="pasteFromClipboard()" title="Paste from clipboard">
+                Paste
+              </button>
+            </div>
+            <button id="btn-download" class="apple-btn-primary" onclick="startDownload()">
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Active Queue Toolbar -->
+        <div class="tab-context-panel" id="context-active" style="display: none;">
+          <div class="queue-stats-row">
+            <div class="queue-stat-card">
+              <div class="stat-num" id="q-stat-active">0</div>
+              <div class="stat-label">Active Transfers</div>
+            </div>
+            <div class="queue-stat-card">
+              <div class="stat-num" id="q-stat-speed">0 B/s</div>
+              <div class="stat-label">Reported Speed</div>
+            </div>
+            <div class="queue-stat-card">
+              <div class="stat-num" id="q-stat-paused">0</div>
+              <div class="stat-label">Paused</div>
+            </div>
+          </div>
+          <div class="queue-actions-row">
+            <button class="apple-btn-secondary" id="btn-pause-all-queue" onclick="pauseAllQueue()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span>Pause Queue</span>
+            </button>
+            <button class="apple-btn-secondary" id="btn-resume-all-queue" onclick="resumeAllQueue()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span>Resume Queue</span>
+            </button>
+            <button class="apple-btn-secondary" id="btn-clear-completed-queue" onclick="clearCompletedHistory()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <span>Clear Completed</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Downloaded Library Toolbar -->
+        <div class="tab-context-panel" id="context-completed" style="display: none;">
+          <div class="completed-toolbar-row">
+            <button class="apple-btn-secondary" onclick="openDownloadsDirectory()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span>Open in Finder</span>
+            </button>
+            <button class="apple-btn-secondary" onclick="clearCompletedHistory()">
+              <span>Clear History</span>
+            </button>
+            <div class="completed-filter-wrap">
+              <input type="text" id="completed-filter-input" class="apple-input-field" placeholder="Search downloaded files..." oninput="onCompletedSearch(this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Movies & Videos Toolbar -->
+        <div class="tab-context-panel" id="context-videos" style="display: none;">
+          <div class="download-action-bar">
+            <div class="url-input-container">
+              <svg class="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+                <line x1="7" y1="2" x2="7" y2="22"/>
+                <line x1="17" y1="2" x2="17" y2="22"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+              </svg>
+              <input 
+                type="text" 
+                id="url-input-video" 
+                class="apple-input-field" 
+                placeholder="Paste a video link" 
+                autocomplete="off" 
+                spellcheck="false"
+              >
+              <button class="apple-btn-pill" onclick="pasteToActiveInput('url-input-video')">Paste</button>
+            </div>
+            <button class="apple-btn-primary" onclick="startDownloadWithInput('url-input-video', false)">
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Audio & Music Toolbar -->
+        <div class="tab-context-panel" id="context-audio" style="display: none;">
+          <div class="download-action-bar">
+            <div class="url-input-container">
+              <svg class="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18V5l12-2v13"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="16" r="3"/>
+              </svg>
+              <input 
+                type="text" 
+                id="url-input-audio" 
+                class="apple-input-field" 
+                placeholder="Paste a music or video link" 
+                autocomplete="off" 
+                spellcheck="false"
+              >
+              <button class="apple-btn-pill" onclick="pasteToActiveInput('url-input-audio')">Paste</button>
+            </div>
+            <button class="apple-btn-primary" onclick="startDownloadWithInput('url-input-audio', true)">
+              <span>Extract Audio</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. Manga & Comics Toolbar -->
+        <div class="tab-context-panel" id="context-manga" style="display: none;">
+          <div class="download-action-bar">
+            <div class="url-input-container">
+              <svg class="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+              <input 
+                type="text" 
+                id="url-input-manga" 
+                class="apple-input-field" 
+                placeholder="Paste a chapter link" 
+                autocomplete="off" 
+                spellcheck="false"
+              >
+              <button class="apple-btn-pill" onclick="pasteToActiveInput('url-input-manga')">Paste</button>
+            </div>
+            <button class="apple-btn-primary" onclick="startDownloadWithInput('url-input-manga', false)">
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 7. Files & Archives Toolbar -->
+        <div class="tab-context-panel" id="context-files" style="display: none;">
+          <div class="download-action-bar">
+            <div class="url-input-container">
+              <svg class="url-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              <input 
+                type="text" 
+                id="url-input-files" 
+                class="apple-input-field" 
+                placeholder="Paste a file link" 
+                autocomplete="off" 
+                spellcheck="false"
+              >
+              <button class="apple-btn-pill" onclick="pasteToActiveInput('url-input-files')">Paste</button>
+            </div>
+            <button class="apple-btn-primary" onclick="startDownloadWithInput('url-input-files', false)">
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+
+      </header>
+
+      <!-- Scrollable Task Items Area -->
+      <section class="canvas-body">
+        <div id="tasks-list" class="apple-tasks-list">
+          <div class="apple-empty-state" id="empty-state">
+            <div class="empty-icon-wrapper">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </div>
+            <div class="empty-title">No Downloads</div>
+            <div class="empty-subtitle">Paste or drag a video, audio, or document URL to begin downloading.</div>
+            <button class="empty-paste-btn" onclick="pasteFromClipboard()">Paste from Clipboard</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Apple Floating Download Status & Telemetry Capsule -->
+      <div id="floating-pill" class="apple-floating-pill" hidden>
+        <!-- Left: App Icon & Task Info -->
+        <div class="pill-info-left">
+          <div class="pill-artwork" id="pill-artwork">
+            <img src="copita-downloader-orange-icon.png?v=2.5" alt="Copita" width="26" height="26">
+          </div>
+          <div class="pill-meta-wrap">
+            <span class="pill-title" id="pill-title">Copita Downloader</span>
+            <span class="pill-meta-sub" id="pill-subtitle">Ready</span>
+          </div>
+        </div>
+
+        <!-- Center: Download Progress Scrubber & Live Speed -->
+        <div class="pill-center-telemetry">
+          <div class="pill-progress-track">
+            <div id="pill-progress-fill" class="pill-progress-bar" style="width: 0%;"></div>
+          </div>
+          <span class="pill-speed-label" id="pill-speed-label">0 B/s</span>
+        </div>
+
+        <!-- Right: Queue & Finder Actions -->
+        <div class="pill-controls-right">
+          <button class="pill-queue-btn" id="pill-btn-playpause" title="Pause / Resume Active Queue">
+            <svg id="pill-pause-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+              <rect x="6" y="4" width="4" height="16"/>
+              <rect x="14" y="4" width="4" height="16"/>
+            </svg>
+            <svg id="pill-play-icon" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+          </button>
+          <button id="pill-btn-clear" class="pill-ctrl-btn" title="Clear Completed Downloads">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+          <button id="pill-btn-open-dir" class="pill-ctrl-btn" title="Reveal Downloads in Finder">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Player & File Preview Modal -->
+  <div id="player-modal" class="modal-overlay">
+    <div id="player-modal-content" class="modal-content player-modal-content">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span id="player-type-badge" class="apple-badge-pill">Preview</span>
+          <h3 id="player-title" class="modal-title" title="">Playback Preview</h3>
+        </div>
+        <div class="modal-header-actions">
+          <button id="player-finder-btn" class="apple-btn-icon" title="Reveal in Finder" onclick="openDownloadsDirectory()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          </button>
+          <button id="player-close" class="close-btn" title="Close (Esc)">&times;</button>
+        </div>
+      </div>
+      <div id="player-stage" class="player-container">
+        <video id="video-preview" controls playsinline autoplay style="display: none;"></video>
+        <div id="audio-container" class="audio-stage" style="display: none;">
+          <div class="audio-waveform-icon">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+          </div>
+          <audio id="audio-preview" controls autoplay style="width: 100%;"></audio>
+        </div>
+        <iframe id="pdf-preview" class="pdf-viewer-frame" style="display: none;" frameborder="0"></iframe>
+        <img id="image-preview" class="image-viewer-stage" style="display: none;" alt="Preview">
+      </div>
+    </div>
+  </div>
+
+  <!-- Preferences Modal -->
+  <div id="settings-modal" class="modal-overlay">
+    <div class="modal-content settings-modal-content">
+      <div class="modal-header">
+        <div class="settings-header-brand">
+          <img src="copita-downloader-orange-icon.png?v=2.5" width="28" height="28" alt="Copita" class="settings-brand-icon">
+          <div>
+            <h3 class="modal-title">Copita Preferences</h3>
+            <span class="settings-brand-sub">Preferences & Supported Services</span>
+          </div>
+        </div>
+        <button id="settings-close" class="close-btn">&times;</button>
+      </div>
+
+      <!-- Segmented Navigation -->
+      <div class="settings-tab-bar">
+        <button class="settings-tab-btn active" data-tab="general">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span>General</span>
+        </button>
+        <button class="settings-tab-btn" data-tab="supported">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <span>Supported Sites</span>
+        </button>
+        <button class="settings-tab-btn" data-tab="engines">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <span>Connection</span>
+        </button>
+      </div>
+
+      <!-- Tab 1: General Settings -->
+      <div class="settings-tab-pane active" id="tab-pane-general">
+        <div class="settings-form">
+          <div class="form-group">
+            <label>Downloads Location & Storage</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="text" id="setting-dir" class="apple-input-field" readonly style="flex: 1; padding: 6px 10px; background: rgba(0,0,0,0.04); border-radius: 7px;">
+              <button type="button" class="apple-btn-secondary" onclick="openDownloadsDirectory()">Open Finder</button>
+            </div>
+            <div class="storage-bar-track" style="margin-top: 10px;">
+              <div id="storage-bar-fill" class="storage-bar-fill" style="width: 35%;"></div>
+            </div>
+            <div class="storage-stats-footer" style="margin-top: 5px;">
+              <span id="storage-free-stat">-- GB free</span>
+              <span id="storage-total-stat">of -- GB total</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Download connections</label>
+            <select id="setting-default-threads" class="apple-select">
+              <option value="8">8 connections</option>
+              <option value="16" selected>16 connections · Default</option>
+              <option value="32">32 connections</option>
+            </select>
+            <span class="form-hint">Used for direct files and streams. More connections may help on faster networks.</span>
+          </div>
+          <div class="form-group">
+            <label>Simultaneous downloads</label>
+            <select id="setting-max-concurrent" class="apple-select">
+              <option value="1">1 at a time</option>
+              <option value="2">2 at a time</option>
+              <option value="3" selected>3 at a time · Default</option>
+              <option value="5">5 at a time</option>
+              <option value="10">10 at a time</option>
+            </select>
+            <span class="form-hint">Extra downloads wait in queue rather than all starting at once.</span>
+          </div>
+          <div class="form-group">
+            <label>Browser session</label>
+            <select id="setting-browser-cookies" class="apple-select">
+              <option value="auto">Automatic (your default browser)</option>
+              <option value="">Off</option>
+              <option value="chrome">Google Chrome</option>
+              <option value="safari">Apple Safari</option>
+              <option value="brave">Brave Browser</option>
+              <option value="firefox">Mozilla Firefox</option>
+              <option value="edge">Microsoft Edge</option>
+              <option value="vivaldi">Vivaldi</option>
+            </select>
+            <span class="form-hint">Signs downloads in with your browser session — needed for account-only content, and it raises YouTube's rate limits. "Automatic" uses whichever browser you last used.</span>
+          </div>
+          <div class="form-group">
+            <label>Speed limit</label>
+            <select id="setting-speed-limit" class="apple-select">
+              <option value="0" selected>Unlimited</option>
+              <option value="500">500 KB/s</option>
+              <option value="1024">1 MB/s</option>
+              <option value="2048">2 MB/s</option>
+              <option value="5120">5 MB/s</option>
+              <option value="10240">10 MB/s</option>
+            </select>
+            <span class="form-hint">Caps the combined speed of all active downloads.</span>
+          </div>
+          <div class="form-group">
+            <label for="setting-proxy">Proxy</label>
+            <input id="setting-proxy" class="apple-select" type="text" placeholder="http://  or  socks5://host:port" />
+            <span class="form-hint">Routes every download, including video and torrent traffic, through a proxy. Blank = direct connection.</span>
+          </div>
+          <div class="settings-media-defaults">
+            <div class="form-group">
+              <label for="sel-video-quality">Video quality</label>
+              <select id="sel-video-quality" class="apple-select">
+                <option value="best">Best available</option>
+                <option value="1080">Up to 1080p</option>
+                <option value="720">Up to 720p</option>
+                <option value="480">Up to 480p</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sel-audio-format">Audio format</label>
+              <select id="sel-audio-format" class="apple-select">
+                <option value="mp3">MP3</option><option value="m4a">M4A</option>
+                <option value="flac">FLAC</option><option value="wav">WAV</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button id="btn-save-settings" class="apple-btn-primary">Save Changes</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Supported Sites ("What's Supported") -->
+      <div class="settings-tab-pane" id="tab-pane-supported">
+        <div class="supported-services-intro">
+          <p class="intro-text">Copita incorporates built-in extractors, multi-part chunk downloaders, and stream remuxers for the following services:</p>
+        </div>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-card-top">
+              <span class="service-cat-badge video">🎬 Video & Streaming</span>
+              <span class="service-status-pill">Available</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-item">
+                <span class="service-name">YouTube</span>
+                <span class="service-desc">4K/1080p 60fps, HDR, Shorts, Playlists & MP3 audio</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">Viduki</span>
+                <span class="service-desc">Full HD movies & series with automatic HLS m3u8 muxing</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">Twitch & Vimeo</span>
+                <span class="service-desc">Clips, live VOD replays & direct video streams</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-top">
+              <span class="service-cat-badge cloud">☁️ Cloud & File Hosts</span>
+              <span class="service-status-pill">Available</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-item">
+                <span class="service-name">Google Drive</span>
+                <span class="service-desc">Bypasses viral quota limits; unpacks shared folders</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">Mega.nz</span>
+                <span class="service-desc">Multi-thread stream decryptor & parallel chunk loader</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">MediaFire & Gofile</span>
+                <span class="service-desc">Instant ad-free direct CDN links & automatic tokens</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">Direct HTTP/HTTPS</span>
+                <span class="service-desc">Multi-segmented 16-32x accelerated downloads</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-top">
+              <span class="service-cat-badge manga">📚 Manga & Comics</span>
+              <span class="service-status-pill">Available</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-item">
+                <span class="service-name">Webtoons</span>
+                <span class="service-desc">Long-strip scroll parser & high-res image stitcher</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">MangaPlus & MangaDex</span>
+                <span class="service-desc">High-quality chapter scraper packaged into CBZ archives</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">Scribd & SlideShare</span>
+                <span class="service-desc">Document presentation unpacker & native PDF viewer</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="service-card">
+            <div class="service-card-top">
+              <span class="service-cat-badge audio">🎧 Audio & Podcasts</span>
+              <span class="service-status-pill">Available</span>
+            </div>
+            <div class="service-card-body">
+              <div class="service-item">
+                <span class="service-name">SoundCloud & Bandcamp</span>
+                <span class="service-desc">Original bit-rate stream downloads & track artwork</span>
+              </div>
+              <div class="service-item">
+                <span class="service-name">Spotify Metadata</span>
+                <span class="service-desc">Album & playlist parser with automated track matching</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Connection ("All Tests Been Done") -->
+      <div class="settings-tab-pane" id="tab-pane-engines">
+        <div class="verification-summary-banner">
+          <div class="verification-status-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#28CD41" stroke-width="2.5">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div class="verification-text">
+            <h4 class="verification-title">Download service</h4>
+            <p class="verification-sub">Check that Copita’s download service is responding.</p>
+          </div>
+          <button class="apple-btn-secondary" id="btn-run-diagnostics" onclick="runDiagnostics()">
+            <span>Run Health Check</span>
+          </button>
+        </div>
+
+        <p class="connection-note" id="diagnostics-status" role="status">A connection check does not test individual websites.</p>
+
+        <div class="settings-section-header">
+          <h4>Requirements</h4>
+          <span class="form-hint">What Copita needs on this Mac, and whether it's already there.</span>
+        </div>
+        <div class="requirements-list" id="requirements-list">
+          <!-- populated by loadRequirements() in app.js -->
+        </div>
+
+        <div class="about-app-footer">
+          <div class="about-branding">
+            <img src="copita-downloader-orange-icon.png?v=2.5" width="20" height="20" alt="Copita">
+            <span>Copita Downloader for macOS</span>
+          </div>
+          <span class="about-arch">Version 2.4</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <span id="toast-message">Notification</span>
+  </div>
+
+  <script src="app.js?v=3.6"></script>
+</body>
+</html>

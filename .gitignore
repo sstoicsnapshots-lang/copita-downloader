@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Virtual env / tooling
+.python-version
+
+# macOS
+.DS_Store
+
+# Build output
+copita-macos/Copita.app/
+copita-macos/Copita_bin
+copita-macos/*.dmg
+
+# Runtime data — downloaded files and task state
+downloads/
+*.copita-part
+.copita_tasks.json
+.copita_settings.json
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+# Internal working notes (not part of the public project)
+notes/
+
+# Generated test outputs (recreated by tests/test_hard_downloads.py)
+tests/test_artifacts/

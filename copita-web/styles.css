@@ -1,0 +1,1917 @@
+/* ==========================================================================
+   Copita Downloader — Apple Native macOS Design System
+   Inspired by Apple Podcasts, Apple Music & Mac App Store
+   ========================================================================== */
+
+:root {
+  /* Apple Light Mode Palette (Default macOS appearance) */
+  --bg-window: #ffffff;
+  --bg-sidebar: rgba(246, 246, 247, 0.85);
+  --bg-sidebar-solid: #f6f6f7;
+  --bg-card: rgba(0, 0, 0, 0.025);
+  --bg-card-hover: rgba(0, 0, 0, 0.045);
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-focus: #ea580c;
+
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-muted: #86868b;
+
+  /* Apple Accent Orange */
+  --accent: #ea580c;
+  --accent-hover: #f97316;
+  --accent-subtle: rgba(234, 88, 12, 0.12);
+  --accent-border: rgba(234, 88, 12, 0.3);
+
+  /* Status Colors */
+  --green: #10b981;
+  --green-subtle: rgba(16, 185, 129, 0.12);
+  --red: #ef4444;
+  --red-subtle: rgba(239, 68, 68, 0.12);
+  --amber: #f59e0b;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", Menlo, Monaco, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-window: #1c1c1e;
+    --bg-sidebar: rgba(36, 36, 38, 0.85);
+    --bg-sidebar-solid: #242426;
+    --bg-card: rgba(255, 255, 255, 0.04);
+    --bg-card-hover: rgba(255, 255, 255, 0.07);
+    --border-subtle: rgba(255, 255, 255, 0.09);
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-muted: #86868b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-window);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* ==========================================================================
+   Apple Split View Window Layout
+   ========================================================================== */
+.apple-window {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Left Sidebar (Podcasts / Music Style)
+   ========================================================================== */
+.apple-sidebar {
+  width: 230px;
+  min-width: 230px;
+  max-width: 230px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  z-index: 50;
+}
+
+.sidebar-drag-spacer {
+  height: 48px;
+  -webkit-app-region: drag;
+}
+
+/* Sidebar Search Box */
+.sidebar-search-wrapper {
+  margin: 0 14px 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 9px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.sidebar-search-input {
+  width: 100%;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 0 10px 0 28px;
+  font-size: 12px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sidebar-search-input {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.sidebar-search-input:focus {
+  background: var(--bg-window);
+  border-color: rgba(234, 88, 12, 0.5);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+.sidebar-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Sidebar Nav Groups */
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 8px;
+}
+
+.sidebar-group {
+  margin-bottom: 14px;
+}
+
+.sidebar-section-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  padding: 8px 10px 4px;
+}
+
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 10px;
+  margin: 1px 0;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s ease;
+}
+
+.nav-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.nav-item.active {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-secondary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav-badge {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.nav-badge.accent {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Sidebar Storage & System Footer */
+.sidebar-footer {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  cursor: default;
+}
+
+.disk-icon-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .disk-icon-circle {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.disk-icon-circle:hover {
+  background: var(--accent-subtle);
+  transform: scale(1.05);
+}
+
+.footer-info {
+  flex: 1;
+  overflow: hidden;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+.footer-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-meta {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+.btn-footer-action {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.btn-footer-action:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-footer-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ==========================================================================
+   Right Main Canvas
+   ========================================================================== */
+.apple-content-canvas {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-window);
+}
+
+/* Topbar */
+.canvas-topbar {
+  padding: 30px 32px 24px;
+  flex-shrink: 0;
+  align-items: stretch;
+  border-bottom: 1px solid var(--border-subtle);
+  -webkit-app-region: drag;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.page-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1040px;
+  align-self: center;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* Tab Context Panels */
+.tab-context-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  -webkit-app-region: no-drag;
+  width: 100%;
+  max-width: 1040px;
+  align-self: center;
+}
+
+/* Queue Stats & Actions */
+.queue-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.queue-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+  padding: 12px 14px;
+}
+
+.stat-num {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.queue-actions-row {
+  display: flex;
+  gap: 8px;
+}
+
+.apple-btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .apple-btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.apple-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.09);
+}
+
+@media (prefers-color-scheme: dark) {
+  .apple-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}
+
+/* Downloaded Completed Toolbar */
+.completed-toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.completed-filter-wrap {
+  flex: 1;
+}
+
+.completed-filter-wrap .apple-input-field {
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .completed-filter-wrap .apple-input-field {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Storage Dashboard Card */
+.storage-dashboard-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.storage-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.storage-bold-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.storage-sub-path {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.storage-bar-track {
+  height: 6px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .storage-bar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.storage-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  border-radius: 999px;
+}
+
+.storage-stats-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.subbar-label {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.subbar-highlight {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Download Action Bar */
+.download-action-bar {
+  display: flex;
+  gap: 10px;
+  -webkit-app-region: no-drag;
+}
+
+.url-input-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid var(--border-subtle);
+  border-radius: 9px;
+  padding: 0 6px 0 12px;
+  height: 44px;
+  transition: all 0.15s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .url-input-container {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.url-input-container:focus-within {
+  background: var(--bg-window);
+  border-color: rgba(234, 88, 12, 0.6);
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.15);
+}
+
+.url-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.apple-input-field {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+}
+
+.apple-input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.apple-btn-pill {
+  background: rgba(0, 0, 0, 0.06);
+  border: none;
+  color: var(--text-primary);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .apple-btn-pill {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.apple-btn-pill:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.apple-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  height: 38px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.apple-btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.apple-btn-primary:active {
+  transform: scale(0.97);
+}
+
+/* Sub-options Toolbar */
+.canvas-subbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  -webkit-app-region: no-drag;
+}
+
+.subbar-options {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.apple-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.apple-checkbox input {
+  accent-color: var(--accent);
+}
+
+.threads-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.apple-select {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 11.5px;
+  color: var(--text-primary);
+  outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .apple-select {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.apple-text-btn:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+/* Subbar Info Button */
+.subbar-right-info {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.subbar-info-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .subbar-info-btn {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.subbar-info-btn:hover {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: rgba(255, 106, 0, 0.3);
+}
+
+.empty-paste-btn {
+  margin-top: 14px;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .empty-paste-btn {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.empty-paste-btn:hover {
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+/* ==========================================================================
+   Scrollable Tasks Canvas Body
+   ========================================================================== */
+.canvas-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 32px 32px;
+}
+
+.apple-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 100%;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+/* Apple Inset Task Card */
+.task-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 11px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.task-card:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .task-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.task-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.task-status-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .task-status-tag {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.task-status-tag.downloading {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.task-status-tag.completed {
+  color: var(--green);
+  background: var(--green-subtle);
+}
+
+.task-status-tag.failed {
+  color: var(--red);
+  background: var(--red-subtle);
+}
+
+.task-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.task-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid transparent;
+  color: var(--text-primary);
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .task-btn {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.task-btn:hover {
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.task-btn.btn-play {
+  color: #059669;
+  background: var(--green-subtle);
+}
+
+@media (prefers-color-scheme: dark) {
+  .task-btn.btn-play {
+    color: #34d399;
+  }
+}
+
+.task-btn.btn-delete:hover {
+  color: var(--red);
+}
+
+/* Progress Track */
+.progress-track {
+  height: 5px;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .progress-track {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progress-fill.completed {
+  background: var(--green);
+}
+
+.progress-fill.failed {
+  background: var(--red);
+}
+
+/* While resolving torrent metadata (DHT lookup) there's no real percent yet —
+   an indeterminate sweep signals "still working" instead of looking stalled. */
+.progress-fill.indeterminate {
+  width: 40% !important;
+  animation: progress-sweep 1.2s ease-in-out infinite;
+}
+
+@keyframes progress-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* Settings — Requirements panel */
+.settings-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+}
+
+.settings-section-header h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.requirement-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+@media (prefers-color-scheme: dark) {
+  .requirement-row {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.requirement-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.requirement-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.requirement-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.requirement-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.requirement-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.requirement-badge.installed {
+  background: var(--green-subtle);
+  color: var(--green);
+}
+
+.requirement-badge.missing {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.requirement-badge.installing {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.requirement-badge.error {
+  background: var(--red-subtle);
+  color: var(--red);
+}
+
+.requirement-progress {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.requirement-action {
+  flex-shrink: 0;
+}
+
+/* Task Telemetry Footer */
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.task-telemetry {
+  display: flex;
+  gap: 12px;
+}
+
+.task-error {
+  color: var(--red);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Empty State */
+.apple-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 48px 20px 88px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-icon-wrapper {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.035);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  color: var(--text-muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  .empty-icon-wrapper {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Apple Floating Player & Telemetry Pill (Podcasts / Music Inspired)
+   ========================================================================== */
+.apple-floating-pill {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 620px;
+  max-width: calc(100% - 48px);
+  height: 52px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
+  border: 0.5px solid rgba(0, 0, 0, 0.1);
+  border-radius: 26px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  z-index: 100;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .apple-floating-pill {
+    background: rgba(40, 40, 44, 0.88);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Pill Left: Download Artwork & Info */
+.pill-info-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 220px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pill-artwork {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pill-artwork img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pill-meta-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.pill-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.pill-meta-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Pill Center: Progress & Speed */
+.pill-center-telemetry {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 14px;
+  min-width: 0;
+}
+
+.pill-progress-track {
+  flex: 1;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pill-progress-track {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.pill-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.pill-speed-label {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Pill Right: Controls */
+.pill-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pill-badge-speed {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 3px 7px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.12s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pill-badge-speed {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.pill-badge-speed:hover {
+  background: var(--accent-subtle);
+  color: var(--accent);
+}
+
+.pill-queue-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text-primary);
+  color: var(--bg-window);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s;
+}
+
+.pill-queue-btn:active {
+  transform: scale(0.92);
+}
+
+.pill-ctrl-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.pill-ctrl-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pill-ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* ==========================================================================
+   Modals & Toasts
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: var(--bg-window);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  max-width: 520px;
+  width: 90%;
+  padding: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 12px;
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+/* --- Tabbed Apple macOS Preferences Modal --- */
+.modal-content.settings-modal-content {
+  max-width: 660px;
+  width: 92vw;
+  max-height: 88vh;
+  padding: 20px 22px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 14px;
+}
+
+.settings-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-brand-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  box-shadow: 0 2px 8px rgba(255, 94, 26, 0.3);
+}
+
+.settings-brand-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 1px;
+}
+
+/* Apple Segmented Tab Control */
+.settings-tab-bar {
+  display: flex;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 3px;
+  border-radius: 9px;
+  gap: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .settings-tab-bar {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.settings-tab-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.settings-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.settings-tab-btn.active {
+  background: #ffffff;
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .settings-tab-btn.active {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.settings-tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: calc(88vh - 145px);
+  padding-right: 4px;
+}
+
+.settings-tab-pane.active {
+  display: flex;
+}
+
+/* Supported Services Grid */
+.supported-services-intro .intro-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.service-card {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s ease;
+}
+
+@media (prefers-color-scheme: dark) {
+  .service-card {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.service-card:hover {
+  border-color: rgba(255, 94, 26, 0.3);
+}
+
+.service-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+
+.service-cat-badge {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.service-status-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(40, 205, 65, 0.12);
+  color: #28cd41;
+}
+
+.service-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.service-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.service-name {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.service-desc {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+/* Engine Verification & Diagnostics */
+.verification-summary-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(40, 205, 65, 0.08);
+  border: 1px solid rgba(40, 205, 65, 0.22);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.verification-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.verification-text {
+  flex: 1;
+}
+
+.verification-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #28cd41;
+  margin: 0 0 2px 0;
+}
+
+.verification-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.diagnostics-results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.diag-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .diag-card {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.diag-bullet {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #28cd41;
+  margin-top: 4px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(40, 205, 65, 0.6);
+}
+
+.diag-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.diag-info strong {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.diag-info span {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.about-app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.about-branding {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.about-branding img {
+  border-radius: 5px;
+}
+
+/* --- Dynamic Apple-Inspired Media Stage --- */
+.modal-content.player-modal-content {
+  max-width: 90vw;
+  max-height: 92vh;
+  width: auto;
+  min-width: 380px;
+  padding: 16px 18px 18px;
+  border-radius: 16px;
+  background: var(--bg-window);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  max-width: calc(100% - 70px);
+}
+
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-header-left .modal-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.apple-badge-pill {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 107, 0, 0.12);
+  color: var(--accent-orange);
+  white-space: nowrap;
+}
+
+/* Portrait / 9:16 Video State */
+.player-modal-content.is-portrait {
+  max-width: 440px;
+  width: 95vw;
+}
+
+/* Landscape / 16:9 Video State */
+.player-modal-content.is-landscape {
+  max-width: 960px;
+  width: 88vw;
+}
+
+/* Standard / 4:3 / 1:1 Video State */
+.player-modal-content.is-standard {
+  max-width: 680px;
+  width: 85vw;
+}
+
+/* Document / PDF In-App Viewer State */
+.player-modal-content.is-document {
+  max-width: 1100px;
+  width: 92vw;
+  height: 88vh;
+}
+
+/* Audio Player State */
+.player-modal-content.is-audio {
+  max-width: 480px;
+  width: 90vw;
+}
+
+/* Media Stage Container */
+.player-container {
+  position: relative;
+  width: 100%;
+  max-height: calc(85vh - 75px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.player-modal-content.is-document .player-container {
+  height: 100%;
+  max-height: none;
+  background: #fff;
+}
+
+.player-modal-content.is-audio .player-container {
+  background: transparent;
+}
+
+/* HTML5 Video Player - Responsive containing */
+.player-container video {
+  display: block;
+  max-width: 100%;
+  max-height: calc(85vh - 75px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  outline: none;
+  background: #000;
+}
+
+/* Audio Stage */
+.audio-stage {
+  width: 100%;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.audio-waveform-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.15), rgba(255, 140, 50, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-orange);
+}
+
+/* In-App PDF Viewer Frame */
+.pdf-viewer-frame {
+  width: 100%;
+  height: 100%;
+  min-height: 540px;
+  border: none;
+  border-radius: 8px;
+  background: #fbfbfd;
+}
+
+/* Image Viewer Stage */
+.image-viewer-stage {
+  display: block;
+  max-width: 100%;
+  max-height: calc(85vh - 75px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-window);
+  border: 1px solid var(--border-subtle);
+  padding: 9px 16px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-size: 12.5px;
+  color: var(--text-primary);
+  z-index: 300;
+  transform: translateY(20px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+
+/* Consistent canvas layout and quieter transfer rows. */
+[hidden] { display: none !important; }
+button, input, select { font-family: inherit; }
+button { white-space: nowrap; }
+button:disabled { opacity: .4; cursor: default; }
+button:focus-visible, summary:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.tab-context-panel, .download-action-bar { width: 100%; min-width: 0; }
+.download-action-bar > .apple-btn-primary { height: 44px; min-width: 112px; box-shadow: none; }
+.apple-btn-pill { flex-shrink: 0; }
+.queue-actions-row, .completed-toolbar-row { gap: 10px; flex-wrap: wrap; }
+.queue-stat-card { flex: 1; min-width: 0; }
+.completed-filter-wrap { min-width: 160px; }
+.completed-filter-wrap input { height: 36px; }
+.task-title { width: 100%; font-size: 13px; }
+.task-detail { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-secondary); }
+.task-status-tag { padding: 0; background: transparent; text-transform: capitalize; letter-spacing: 0; font-weight: 500; }
+.task-status-tag.completed, .task-status-tag.downloading, .task-status-tag.failed { background: transparent; }
+.task-file-icon { width: 36px; height: 40px; display: grid; place-items: center; flex-shrink: 0; border-radius: 9px; background: var(--accent-subtle); color: var(--accent); font-size: 21px; }
+.is-completed .task-file-icon { background: var(--green-subtle); color: var(--green); font-size: 17px; }
+.task-btn { min-height: 30px; font-weight: 500; }
+.task-error-details { font-size: 11px; color: var(--text-secondary); user-select: text; }
+.task-error-details summary { cursor: pointer; padding: 4px 0; }
+.task-error-details pre { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; padding: 10px; background: var(--bg-card); border-radius: 6px; }
+.has-transfers .canvas-body { padding-bottom: 100px; }
+.apple-floating-pill { width: 580px; box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+.pill-info-left { min-width: 0; flex: 1; }
+.pill-center-telemetry { min-width: 70px; }
+.settings-media-defaults { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.settings-form .apple-select { width: 100%; height: 36px; padding: 6px 10px; border: 1px solid var(--border-subtle); border-radius: 7px; background: var(--bg-card); color: var(--text-primary); }
+.connection-note { padding: 0 24px 24px; font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
+@media (max-width: 900px) {
+  .apple-sidebar { width: 204px; min-width: 204px; max-width: 204px; }
+  .canvas-topbar { padding: 28px 24px 20px; }
+  .canvas-body { padding-left: 24px; padding-right: 24px; }
+  .task-header { flex-wrap: wrap; gap: 10px; }
+  .task-info { flex-basis: calc(100% - 50px); }
+  .task-actions { margin-left: 46px; }
+}
+@media (max-width: 620px) {
+  .apple-sidebar { width: 172px; min-width: 172px; max-width: 172px; }
+  .canvas-topbar { padding: 24px 16px 16px; }
+  .canvas-body { padding-left: 16px; padding-right: 16px; }
+  .download-action-bar { flex-wrap: wrap; }
+  .url-input-container { flex-basis: 100%; }
+  .page-title { font-size: 24px; }
+  .queue-stats-row { flex-direction: column; }
+  .settings-media-defaults { grid-template-columns: 1fr; }
+}
