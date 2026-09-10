@@ -301,3 +301,18 @@ Distributed under the **GNU General Public License v3.0**. You may
 redistribute and modify it under the terms of the GPL as published by the
 Free Software Foundation. It comes with **no warranty**. See
 [LICENSE](LICENSE) for the full text.
+
+
+
+
+
+
+<img width="1172" height="832" alt="Screenshot 2026-09-10 at 3 48 33 PM" src="https://github.com/user-attachments/assets/b81008dc-5d7a-4eec-ad59-63120f7612e9" />
+
+<img width="1582" height="960" alt="Screenshot 2026-09-10 at 3 49 17 PM" src="https://github.com/user-attachments/assets/32e5cb5e-ef37-4c90-a7b4-0873ab050273" />
+
+
+https://github.com/user-attachments/assets/6686453a-d930-43dd-ab68-884dc4b8ec25
+
+
+
