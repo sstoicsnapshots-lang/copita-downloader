@@ -5,19 +5,39 @@ in, or send it straight from your browser — and Copita grabs it: video,
 audio, images, documents, archives, torrents. Everything runs locally on
 your Mac. Nothing you download ever passes through anyone else's server.
 
+Copita is free and open source (GPL-3.0). Full source, and the Windows /
+Linux versions, are at:
+https://github.com/sstoicsnapshots-lang/copita-downloader
+
+## Installing
+
+Drag **Copita Downloader** onto the **Applications** shortcut in this
+window.
+
 ## Opening it the first time
 
-Copita isn't notarized by Apple yet, so macOS will warn you the first
-time you open it ("Apple could not verify..."). This is expected —
-here's how to get past it:
+Copita isn't notarized by Apple, so the first launch is blocked. To
+allow it (you only do this once):
 
-1. Right-click (or Control-click) **Copita Downloader** in your
-   Applications folder.
-2. Choose **Open** from the menu.
-3. Click **Open** again in the dialog that appears.
+1. Double-click **Copita Downloader** in Applications. macOS says it
+   "cannot be opened" — click **Done**.
+2. Open **System Settings → Privacy & Security**.
+3. Scroll down to the **Security** section. You'll see a line like
+   *"Copita Downloader was blocked to protect your Mac."* Click
+   **Open Anyway**.
+4. Confirm with Touch ID or your password, then click **Open** in the
+   final dialog.
 
-You only need to do this once. After that, it opens normally like any
-other app.
+After that it opens normally like any other app.
+
+*(On older macOS you can instead right-click the app → **Open** →
+**Open**.)*
+
+## First run
+
+Open **Settings → Connection**. It checks the few components Copita's
+download engine relies on and installs anything missing with one click.
+Do this once and you're set.
 
 ## Getting a download started
 
@@ -64,15 +84,17 @@ Open **Settings** (⌘,) from the menu bar or the sidebar gear icon to
 change:
 
 - Where downloads are saved
-- How many connections/simultaneous downloads to use
+- How many connections / simultaneous downloads to use
 - Default video quality and audio format
-- Your browser session (for sites that need you signed in)
-
-**Settings → Connection** shows what Copita needs on your Mac (FFmpeg,
-a browser, etc.) and can install anything missing with one click.
+- Your browser session (for sites that need you signed in, and for
+  YouTube if it starts asking you to "confirm you're not a bot")
 
 ## Questions or something not working?
 
 If a download fails, click **Retry** — most failures are the source
-site being temporarily unavailable. If the app itself won't respond,
-quit it from the menu bar (**Quit Copita Downloader**) and reopen it.
+site being temporarily unavailable or rate-limiting your connection,
+and clear up on their own. If the app itself won't respond, quit it
+from the menu bar (**Quit Copita Downloader**) and reopen it.
+
+Bugs and feature requests:
+https://github.com/sstoicsnapshots-lang/copita-downloader/issues
